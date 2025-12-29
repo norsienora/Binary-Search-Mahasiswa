@@ -6,3 +6,7 @@ dist/
 
 *.exe
 *.zip
+
+Binary-Search-Mahasiswa/
+*.zip
+dist/
