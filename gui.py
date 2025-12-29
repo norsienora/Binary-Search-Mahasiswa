@@ -15,19 +15,16 @@ recur_times = []
 iter_opt_times = []
 recur_opt_times = []
 
-# --- Root window dibuat dulu ---
 root = tk.Tk()
 root.title("Pencarian Data Mahasiswa Berdasarkan NIM")
-entry_font = ("Arial", 14)  # font Arial, ukuran 14
+entry_font = ("Arial", 14)  
 button_font = ("Arial", 14, "bold")
 
-# Variabel untuk tombol pilihan grafik, dibuat setelah root
 show_iter = tk.BooleanVar(value=True, master=root)
 show_recur = tk.BooleanVar(value=True, master=root)
 show_iter_opt = tk.BooleanVar(value=True, master=root)
 show_recur_opt = tk.BooleanVar(value=True, master=root)
 
-# --- Fungsi update grafik ---
 def update_graph():
     ax.clear()
     if show_iter.get():
@@ -48,16 +45,12 @@ def update_graph():
     fig.tight_layout()
     canvas.draw()
 
-# --- Fungsi pencarian mahasiswa ---
 def search():
     try:
         target_nim = int(entry.get())
-        # Panggil fungsi biasa
         result_i, t_i, result_r, t_r = measure_search(mahasiswa, target_nim)
-        # Panggil fungsi optimize
         result_i_opt, t_i_opt, result_r_opt, t_r_opt = measure_search_optimize(mahasiswa, target_nim)
 
-        # Update hasil di Text widget
         result_text.delete("1.0", tk.END)
         if result_i:
             result_text.tag_configure("highlight", font=("Times New Roman", 12))
@@ -75,7 +68,6 @@ def search():
         result_text.insert(tk.END, f"Waktu Iteratif (Optimize) : {t_i_opt:.10f} detik\n", "highlight")
         result_text.insert(tk.END, f"Waktu Rekursif (Optimize) : {t_r_opt:.10f} detik\n", "highlight")
 
-        # Update list waktu untuk grafik
         trial = trial_numbers[-1] + 1 if trial_numbers else 1
         trial_numbers.append(trial)
         iter_times.append(t_i)
@@ -83,7 +75,6 @@ def search():
         iter_opt_times.append(t_i_opt)
         recur_opt_times.append(t_r_opt)
 
-        # Batasi jumlah data sesuai MAX_POINTS
         if len(trial_numbers) > MAX_POINTS:
             trial_numbers.pop(0)
             iter_times.pop(0)
@@ -106,15 +97,13 @@ def search_case(case_type):
     elif case_type == 'average':
         target_nim = random.choice(mahasiswa)['nim']
     elif case_type == 'worst':
-        target_nim = mahasiswa[-1]['nim'] + 1  # NIM tidak ada
+        target_nim = mahasiswa[-1]['nim'] + 1  
     else:
         return
 
-    # Hitung waktu search biasa dan optimize
     result_i, t_i, result_r, t_r = measure_search(mahasiswa, target_nim)
     result_i_opt, t_i_opt, result_r_opt, t_r_opt = measure_search_optimize(mahasiswa, target_nim)
 
-    # Tampilkan hasil di Text widget
     result_text.delete("1.0", tk.END)
     result_text.tag_configure("highlight", font=("Times New Roman", 12))
     result_text.insert(tk.END, f"CASE: {case_type.upper()}\n\n", "highlight")
@@ -131,7 +120,6 @@ def search_case(case_type):
     result_text.insert(tk.END, f"Waktu Iteratif (Optimize) : {t_i_opt:.10f} detik\n", "highlight")
     result_text.insert(tk.END, f"Waktu Rekursif (Optimize) : {t_r_opt:.10f} detik\n", "highlight")
 
-# --- GUI Layout ---
 tk.Label(root, text="Masukkan NIM:", font=entry_font).pack(pady=5)
 entry = tk.Entry(root, width=30, font=entry_font)
 entry.pack(pady=5)
@@ -148,7 +136,6 @@ tk.Button(frame_cases, text="Best Case", command=lambda: search_case('best')).gr
 tk.Button(frame_cases, text="Average Case", command=lambda: search_case('average')).grid(row=0, column=1, padx=5)
 tk.Button(frame_cases, text="Worst Case", command=lambda: search_case('worst')).grid(row=0, column=2, padx=5)
 
-# Frame untuk tombol grafik
 frame_buttons = tk.Frame(root)
 frame_buttons.pack(pady=5)
 
@@ -157,7 +144,6 @@ tk.Checkbutton(frame_buttons, text="Rekursif", variable=show_recur, command=upda
 tk.Checkbutton(frame_buttons, text="Iteratif (Optimize)", variable=show_iter_opt, command=update_graph).grid(row=0, column=2, padx=5)
 tk.Checkbutton(frame_buttons, text="Rekursif (Optimize)", variable=show_recur_opt, command=update_graph).grid(row=0, column=3, padx=5)
 
-# --- Setup matplotlib canvas ---
 fig, ax = plt.subplots(figsize=(7, 6))
 canvas = FigureCanvasTkAgg(fig, master=root)
 canvas.get_tk_widget().pack(pady=10)
