@@ -46,5 +46,5 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=False,   # GUI only (tidak muncul CMD)
+    console=False,   
 )
